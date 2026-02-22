@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In — ALUMights</title>
+    <meta name="description"
+        content="Sign in to ALUMights alumni network to connect with your college batchmates and alumni.">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+        crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link rel="stylesheet" href="css/common.css">
+    <style>
+        .auth-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: var(--sp-xl);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Warm atmospheric orbs */
+        .auth-page::before,
+        .auth-page::after {
+            content: '';
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: 0.08;
+            pointer-events: none;
+        }
+
+        .auth-page::before {
+            width: 500px;
+            height: 500px;
+            background: var(--clr-accent);
+            top: -150px;
+            left: -150px;
+            animation: float 12s ease-in-out infinite alternate;
+        }
+
+        .auth-page::after {
+            width: 400px;
+            height: 400px;
+            background: var(--clr-secondary);
+            bottom: -100px;
+            right: -100px;
+            animation: float 15s ease-in-out infinite alternate-reverse;
+        }
+
+        @keyframes float {
+            from {
+                transform: translate(0, 0);
+            }
+
+            to {
+                transform: translate(30px, 20px);
+            }
+        }
+
+        .auth-card {
+            width: 100%;
+            max-width: 440px;
+            padding: var(--sp-2xl) var(--sp-2xl) var(--sp-xl);
+            position: relative;
+            z-index: 1;
+            animation: fadeInUp 0.6s var(--ease-smooth);
+        }
+
+        .auth-brand {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: var(--sp-2xl);
+        }
+
+        .auth-brand img {
+            height: 38px;
+            border-radius: 3px;
+            opacity: 0.9;
+        }
+
+        .auth-brand span {
+            font-family: var(--ff-display);
+            font-size: var(--fs-2xl);
+            font-weight: var(--fw-bold);
+            font-style: italic;
+            color: var(--clr-accent);
+        }
+
+        .auth-title {
+            font-family: var(--ff-display);
+            font-size: var(--fs-xl);
+            font-weight: var(--fw-medium);
+            font-style: italic;
+            color: var(--clr-text-heading);
+            text-align: center;
+            margin-bottom: var(--sp-xs);
+        }
+
+        .auth-subtitle {
+            text-align: center;
+            color: var(--clr-text-muted);
+            font-family: var(--ff-mono);
+            font-size: var(--fs-xs);
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            font-size: var(--fs-sm);
+            margin-bottom: var(--sp-xl);
+        }
+
+        .password-wrapper {
+            position: relative;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--clr-text-dim);
+            cursor: pointer;
+            padding: 4px;
+            transition: color var(--transition-fast);
+        }
+
+        .password-toggle:hover {
+            color: var(--clr-text);
+        }
+
+        .captcha-row {
+            display: flex;
+            gap: var(--sp-sm);
+            align-items: stretch;
+        }
+
+        .captcha-row input {
+            flex: 1;
+        }
+
+        .captcha-refresh-btn {
+            width: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(148, 163, 184, 0.1);
+            border: 1px solid var(--clr-border);
+            border-radius: var(--radius-md);
+            color: var(--clr-text-muted);
+            transition: all var(--transition-fast);
+        }
+
+        .captcha-refresh-btn:hover {
+            background: var(--clr-bg-hover);
+            color: var(--clr-accent-light);
+        }
+
+        .captcha-canvas {
+            margin: var(--sp-sm) 0;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+        }
+
+        .auth-actions {
+            margin-top: var(--sp-xl);
+            display: flex;
+            flex-direction: column;
+            gap: var(--sp-sm);
+        }
+
+        .auth-footer {
+            text-align: center;
+            margin-top: var(--sp-xl);
+            font-size: var(--fs-sm);
+            color: var(--clr-text-muted);
+        }
+
+        .auth-footer a {
+            font-weight: var(--fw-semibold);
+        }
+
+        .form-message {
+            padding: var(--sp-md);
+            border-radius: var(--radius-md);
+            font-size: var(--fs-sm);
+            margin-bottom: var(--sp-md);
+            display: none;
+        }
+
+        .form-message.error {
+            display: block;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #fca5a5;
+        }
+
+        .form-message.success {
+            display: block;
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            color: #86efac;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="auth-page">
+        <div class="auth-card glass">
+            <div class="auth-brand">
+                <img src="images/logoHome.jpeg" alt="ALUMights">
+                <span>ALUMights</span>
+            </div>
+
+            <h1 class="auth-title">Welcome Back</h1>
+            <p class="auth-subtitle">Sign in to your alumni network</p>
+
+            <div class="form-message" id="form-message"></div>
+
+            <form id="login-form" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label class="form-label" for="username">Username or Email</label>
+                    <input type="text" class="form-control" id="username" placeholder="Enter your username or email"
+                        required autocomplete="username">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="password">Password</label>
+                    <div class="password-wrapper">
+                        <input type="password" class="form-control" id="password" placeholder="Enter your password"
+                            required autocomplete="current-password">
+                        <i class="fa-solid fa-eye password-toggle" id="toggle-password" onclick="togglePassword()"></i>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Verify you're human</label>
+                    <div class="captcha-canvas" id="captcha-preview"></div>
+                    <div class="captcha-row">
+                        <input type="text" class="form-control" id="captcha-input" placeholder="Enter captcha text"
+                            required>
+                        <button type="button" class="captcha-refresh-btn" onclick="Captcha.render('captcha-preview')"
+                            title="Refresh captcha">
+                            <i class="fa-solid fa-rotate-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="auth-actions">
+                    <button type="submit" class="btn btn-primary btn-lg btn-block" id="login-btn">
+                        <i class="fa-solid fa-right-to-bracket"></i> Sign In
+                    </button>
+                </div>
+            </form>
+
+            <div class="auth-footer">
+                <p>Don't have an account? <a href="register.html">Create one now</a></p>
+                <p style="margin-top: 8px;"><a href="index.html" style="color: var(--clr-text-dim);">← Back to Home</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script src="js/captcha.js"></script>
+    <script src="js/utils.js"></script>
+    <script>
+        // Initialize
+        Auth.seedSampleUsers();
+        Captcha.render('captcha-preview');
+
+        // Check if redirected with message
+        const urlParams = new URLSearchParams(window.location.search);
+        const msg = urlParams.get('msg');
+        if (msg) {
+            const msgEl = document.getElementById('form-message');
+            msgEl.textContent = decodeURIComponent(msg);
+            msgEl.classList.add('success');
+        }
+
+        function togglePassword() {
+            const input = document.getElementById('password');
+            const icon = document.getElementById('toggle-password');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.replace('fa-eye', 'fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.replace('fa-eye-slash', 'fa-eye');
+            }
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const msgEl = document.getElementById('form-message');
+
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            const captchaInput = document.getElementById('captcha-input').value;
+
+            // Validate captcha
+            if (!Captcha.validate(captchaInput)) {
+                msgEl.textContent = 'Captcha is incorrect. Please try again.';
+                msgEl.className = 'form-message error';
+                Captcha.render('captcha-preview');
+                document.getElementById('captcha-input').value = '';
+                return;
+            }
+
+            const result = Auth.login(username, password);
+
+            if (result.success) {
+                msgEl.textContent = result.message;
+                msgEl.className = 'form-message success';
+                setTimeout(() => window.location.href = 'index.html', 600);
+            } else {
+                msgEl.textContent = result.message;
+                msgEl.className = 'form-message error';
+                Captcha.render('captcha-preview');
+                document.getElementById('captcha-input').value = '';
+            }
+        }
+    </script>
+</body>
+
+</html>

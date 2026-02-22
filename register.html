@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Join ALUMights — Create Account</title>
+    <meta name="description"
+        content="Register on ALUMights to connect with alumni, discover batchmates, and grow your professional network.">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+        crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link rel="stylesheet" href="css/common.css">
+    <style>
+        .auth-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: var(--sp-xl);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .auth-page::before,
+        .auth-page::after {
+            content: '';
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: 0.08;
+            pointer-events: none;
+        }
+
+        .auth-page::before {
+            width: 500px;
+            height: 500px;
+            background: var(--clr-secondary);
+            top: -150px;
+            right: -150px;
+            animation: float 12s ease-in-out infinite alternate;
+        }
+
+        .auth-page::after {
+            width: 400px;
+            height: 400px;
+            background: var(--clr-accent);
+            bottom: -100px;
+            left: -100px;
+            animation: float 15s ease-in-out infinite alternate-reverse;
+        }
+
+        @keyframes float {
+            from {
+                transform: translate(0, 0);
+            }
+
+            to {
+                transform: translate(30px, 20px);
+            }
+        }
+
+        .auth-card {
+            width: 100%;
+            max-width: 520px;
+            padding: var(--sp-2xl) var(--sp-2xl) var(--sp-xl);
+            position: relative;
+            z-index: 1;
+            animation: fadeInUp 0.6s var(--ease-smooth);
+        }
+
+        .auth-brand {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: var(--sp-xl);
+        }
+
+        .auth-brand img {
+            height: 38px;
+            border-radius: 3px;
+            opacity: 0.9;
+        }
+
+        .auth-brand span {
+            font-family: var(--ff-display);
+            font-size: var(--fs-2xl);
+            font-weight: var(--fw-bold);
+            font-style: italic;
+            color: var(--clr-accent);
+        }
+
+        .auth-title {
+            font-family: var(--ff-display);
+            font-size: var(--fs-xl);
+            font-weight: var(--fw-medium);
+            font-style: italic;
+            color: var(--clr-text-heading);
+            text-align: center;
+            margin-bottom: var(--sp-xs);
+        }
+
+        .auth-subtitle {
+            text-align: center;
+            color: var(--clr-text-muted);
+            font-size: var(--fs-sm);
+            margin-bottom: var(--sp-xl);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--sp-md);
+        }
+
+        @media (max-width: 520px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .password-wrapper {
+            position: relative;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--clr-text-dim);
+            cursor: pointer;
+            padding: 4px;
+        }
+
+        .password-toggle:hover {
+            color: var(--clr-text);
+        }
+
+        .password-strength {
+            height: 4px;
+            border-radius: 2px;
+            margin-top: 6px;
+            background: var(--clr-border);
+            overflow: hidden;
+        }
+
+        .password-strength-bar {
+            height: 100%;
+            border-radius: 2px;
+            width: 0;
+            transition: width 0.3s, background 0.3s;
+        }
+
+        .password-strength-text {
+            font-size: var(--fs-xs);
+            margin-top: 4px;
+            color: var(--clr-text-dim);
+        }
+
+        .captcha-row {
+            display: flex;
+            gap: var(--sp-sm);
+            align-items: stretch;
+        }
+
+        .captcha-row input {
+            flex: 1;
+        }
+
+        .captcha-refresh-btn {
+            width: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(148, 163, 184, 0.1);
+            border: 1px solid var(--clr-border);
+            border-radius: var(--radius-md);
+            color: var(--clr-text-muted);
+        }
+
+        .captcha-refresh-btn:hover {
+            background: var(--clr-bg-hover);
+            color: var(--clr-accent-light);
+        }
+
+        .captcha-canvas {
+            margin: var(--sp-sm) 0;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+        }
+
+        .auth-actions {
+            margin-top: var(--sp-xl);
+            display: flex;
+            flex-direction: column;
+            gap: var(--sp-sm);
+        }
+
+        .auth-footer {
+            text-align: center;
+            margin-top: var(--sp-xl);
+            font-size: var(--fs-sm);
+            color: var(--clr-text-muted);
+        }
+
+        .auth-footer a {
+            font-weight: var(--fw-semibold);
+        }
+
+        .form-message {
+            padding: var(--sp-md);
+            border-radius: var(--radius-md);
+            font-size: var(--fs-sm);
+            margin-bottom: var(--sp-md);
+            display: none;
+        }
+
+        .form-message.error {
+            display: block;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #fca5a5;
+        }
+
+        .form-message.success {
+            display: block;
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            color: #86efac;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="auth-page">
+        <div class="auth-card glass">
+            <div class="auth-brand">
+                <img src="images/logoHome.jpeg" alt="ALUMights">
+                <span>ALUMights</span>
+            </div>
+
+            <h1 class="auth-title">Create Your Account</h1>
+            <p class="auth-subtitle">Join the alumni network and start connecting</p>
+
+            <div class="form-message" id="form-message"></div>
+
+            <form id="register-form" onsubmit="handleRegister(event)">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="fullName">Full Name *</label>
+                        <input type="text" class="form-control" id="fullName" placeholder="e.g. Aditya Yadav" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="username">Username *</label>
+                        <input type="text" class="form-control" id="username" placeholder="e.g. aditya_yadav" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="email">Email Address *</label>
+                    <input type="email" class="form-control" id="email" placeholder="you@example.com" required>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="college">College / University</label>
+                        <input type="text" class="form-control" id="college" placeholder="e.g. University of Delhi">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="course">Course</label>
+                        <select class="form-control" id="course">
+                            <option value="">Select course</option>
+                            <option value="B.Tech CSE">B.Tech CSE</option>
+                            <option value="B.Tech IT">B.Tech IT</option>
+                            <option value="B.Tech ECE">B.Tech ECE</option>
+                            <option value="B.Tech Mechanical">B.Tech Mechanical</option>
+                            <option value="B.Tech Civil">B.Tech Civil</option>
+                            <option value="M.Tech AI">M.Tech AI/ML</option>
+                            <option value="M.Tech CSE">M.Tech CSE</option>
+                            <option value="B.Sc. Physics">B.Sc. Physics</option>
+                            <option value="M.Sc. Physics">M.Sc. Physics</option>
+                            <option value="B.A.">B.A.</option>
+                            <option value="M.A.">M.A.</option>
+                            <option value="MBA">MBA</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="gradYear">Graduation Year</label>
+                    <select class="form-control" id="gradYear">
+                        <option value="">Select year</option>
+                        <script>
+                            const sel = document.getElementById('gradYear');
+                            for (let y = 2030; y >= 2000; y--) {
+                                sel.innerHTML += `<option value="${y}">${y}</option>`;
+                            }
+                        </script>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="bio">Short Bio</label>
+                    <textarea class="form-control" id="bio" rows="2" placeholder="Tell us about yourself..."
+                        style="resize:vertical;min-height:60px;"></textarea>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="password">Password *</label>
+                        <div class="password-wrapper">
+                            <input type="password" class="form-control" id="password" placeholder="Min 6 characters"
+                                required oninput="checkPasswordStrength()">
+                            <i class="fa-solid fa-eye password-toggle" onclick="togglePassword('password', this)"></i>
+                        </div>
+                        <div class="password-strength">
+                            <div class="password-strength-bar" id="strength-bar"></div>
+                        </div>
+                        <div class="password-strength-text" id="strength-text"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="confirmPassword">Confirm Password *</label>
+                        <div class="password-wrapper">
+                            <input type="password" class="form-control" id="confirmPassword"
+                                placeholder="Re-enter password" required>
+                            <i class="fa-solid fa-eye password-toggle"
+                                onclick="togglePassword('confirmPassword', this)"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Verify you're human</label>
+                    <div class="captcha-canvas" id="captcha-preview"></div>
+                    <div class="captcha-row">
+                        <input type="text" class="form-control" id="captcha-input" placeholder="Enter captcha text"
+                            required>
+                        <button type="button" class="captcha-refresh-btn" onclick="Captcha.render('captcha-preview')"
+                            title="Refresh captcha">
+                            <i class="fa-solid fa-rotate-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="auth-actions">
+                    <button type="submit" class="btn btn-primary btn-lg btn-block">
+                        <i class="fa-solid fa-user-plus"></i> Create Account
+                    </button>
+                </div>
+            </form>
+
+            <div class="auth-footer">
+                <p>Already have an account? <a href="login.html">Sign in</a></p>
+                <p style="margin-top: 8px;"><a href="index.html" style="color: var(--clr-text-dim);">← Back to Home</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script src="js/captcha.js"></script>
+    <script src="js/utils.js"></script>
+    <script>
+        Auth.seedSampleUsers();
+        Captcha.render('captcha-preview');
+
+        function togglePassword(fieldId, icon) {
+            const input = document.getElementById(fieldId);
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.replace('fa-eye', 'fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.replace('fa-eye-slash', 'fa-eye');
+            }
+        }
+
+        function checkPasswordStrength() {
+            const pw = document.getElementById('password').value;
+            const bar = document.getElementById('strength-bar');
+            const text = document.getElementById('strength-text');
+
+            let score = 0;
+            if (pw.length >= 6) score++;
+            if (pw.length >= 10) score++;
+            if (/[A-Z]/.test(pw)) score++;
+            if (/[0-9]/.test(pw)) score++;
+            if (/[^A-Za-z0-9]/.test(pw)) score++;
+
+            const labels = ['', 'Weak', 'Fair', 'Good', 'Strong', 'Very Strong'];
+            const colors = ['', '#ef4444', '#f59e0b', '#eab308', '#22c55e', '#06b6d4'];
+            const widths = ['0%', '20%', '40%', '60%', '80%', '100%'];
+
+            bar.style.width = widths[score];
+            bar.style.background = colors[score];
+            text.textContent = labels[score];
+            text.style.color = colors[score];
+        }
+
+        function handleRegister(e) {
+            e.preventDefault();
+            const msgEl = document.getElementById('form-message');
+
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            if (password !== confirmPassword) {
+                msgEl.textContent = 'Passwords do not match.';
+                msgEl.className = 'form-message error';
+                return;
+            }
+
+            const captchaInput = document.getElementById('captcha-input').value;
+            if (!Captcha.validate(captchaInput)) {
+                msgEl.textContent = 'Captcha is incorrect. Please try again.';
+                msgEl.className = 'form-message error';
+                Captcha.render('captcha-preview');
+                document.getElementById('captcha-input').value = '';
+                return;
+            }
+
+            const data = {
+                fullName: document.getElementById('fullName').value,
+                username: document.getElementById('username').value,
+                email: document.getElementById('email').value,
+                password: password,
+                college: document.getElementById('college').value,
+                course: document.getElementById('course').value,
+                gradYear: document.getElementById('gradYear').value,
+                bio: document.getElementById('bio').value
+            };
+
+            const result = Auth.register(data);
+
+            if (result.success) {
+                msgEl.textContent = result.message;
+                msgEl.className = 'form-message success';
+                setTimeout(() => {
+                    window.location.href = `login.html?msg=${encodeURIComponent(result.message)}`;
+                }, 800);
+            } else {
+                msgEl.textContent = result.message;
+                msgEl.className = 'form-message error';
+            }
+        }
+    </script>
+</body>
+
+</html>

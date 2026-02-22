@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Events — ALUMights</title>
+    <meta name="description"
+        content="Discover upcoming alumni events, reunions, hackathons, and career fairs on ALUMights.">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+        crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link rel="stylesheet" href="css/common.css">
+    <style>
+        .events-page {
+            max-width: var(--container-max);
+            margin: 0 auto;
+            padding: var(--sp-xl) var(--sp-lg);
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: var(--sp-2xl);
+            animation: fadeInDown 0.5s var(--ease-smooth);
+        }
+
+        .page-header h1 {
+            font-family: var(--ff-display);
+            font-size: var(--fs-3xl);
+            color: var(--clr-text-heading);
+            margin-bottom: var(--sp-sm);
+        }
+
+        .page-header h1 span {
+            color: var(--clr-accent);
+            font-style: italic;
+        }
+
+        .page-header p {
+            color: var(--clr-text-muted);
+            font-size: var(--fs-md);
+        }
+
+        /* Category Tabs */
+        .category-tabs {
+            display: flex;
+            gap: var(--sp-sm);
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: var(--sp-xl);
+        }
+
+        .cat-tab {
+            padding: 0.45rem 1.2rem;
+            border-radius: var(--radius-full);
+            font-size: var(--fs-sm);
+            font-weight: var(--fw-medium);
+            color: var(--clr-text-muted);
+            background: rgba(148, 163, 184, 0.08);
+            border: 1px solid var(--clr-border);
+            transition: all var(--transition-fast);
+        }
+
+        .cat-tab:hover {
+            background: var(--clr-bg-hover);
+            color: var(--clr-text);
+        }
+
+        .cat-tab.active {
+            background: var(--clr-accent-gradient);
+            color: var(--clr-bg-void);
+            border-color: transparent;
+        }
+
+        /* Events Grid */
+        .events-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+            gap: var(--sp-lg);
+        }
+
+        @media (max-width: 480px) {
+            .events-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .event-card {
+            padding: 0;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .event-card-banner {
+            height: 8px;
+            background: var(--clr-accent-gradient);
+        }
+
+        .event-card-body {
+            padding: var(--sp-xl);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .event-card-header {
+            display: flex;
+            gap: var(--sp-lg);
+            margin-bottom: var(--sp-lg);
+        }
+
+        .event-date-block {
+            width: 60px;
+            flex-shrink: 0;
+            text-align: center;
+            padding: var(--sp-sm);
+            background: var(--clr-bg-input);
+            border-radius: var(--radius-md);
+        }
+
+        .event-date-block .month {
+            font-size: var(--fs-xs);
+            font-weight: var(--fw-semibold);
+            color: var(--clr-accent-light);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .event-date-block .day {
+            font-size: var(--fs-2xl);
+            font-weight: var(--fw-extrabold);
+            color: var(--clr-text-heading);
+            line-height: 1.1;
+        }
+
+        .event-date-block .year {
+            font-size: var(--fs-xs);
+            color: var(--clr-text-dim);
+        }
+
+        .event-card-info {
+            flex: 1;
+        }
+
+        .event-card-info h3 {
+            font-family: var(--ff-display);
+            font-size: var(--fs-lg);
+            color: var(--clr-text-heading);
+            font-weight: var(--fw-semibold);
+            margin-bottom: var(--sp-xs);
+        }
+
+        .event-card-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--sp-md);
+            font-size: var(--fs-xs);
+            color: var(--clr-text-dim);
+        }
+
+        .event-card-meta span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .event-card-desc {
+            color: var(--clr-text-muted);
+            font-size: var(--fs-sm);
+            line-height: 1.6;
+            margin-top: var(--sp-md);
+            flex: 1;
+        }
+
+        .event-card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: var(--sp-lg);
+            padding-top: var(--sp-md);
+            border-top: 1px solid var(--clr-border);
+        }
+
+        .event-category-badge {
+            font-size: var(--fs-xs);
+            padding: 3px 10px;
+            border-radius: var(--radius-full);
+            font-weight: var(--fw-medium);
+        }
+
+        .cat-reunion {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--clr-accent-light);
+        }
+
+        .cat-seminar {
+            background: rgba(6, 182, 212, 0.15);
+            color: #22d3ee;
+        }
+
+        .cat-career {
+            background: rgba(34, 197, 94, 0.15);
+            color: #4ade80;
+        }
+
+        .cat-competition {
+            background: rgba(245, 158, 11, 0.15);
+            color: #fbbf24;
+        }
+
+        .cat-sports {
+            background: rgba(239, 68, 68, 0.15);
+            color: #f87171;
+        }
+
+        .cat-workshop {
+            background: rgba(56, 97, 251, 0.15);
+            color: #6b8cff;
+        }
+
+        .empty-events {
+            text-align: center;
+            padding: var(--sp-3xl);
+            color: var(--clr-text-dim);
+            grid-column: 1 / -1;
+        }
+
+        .empty-events i {
+            font-size: 3rem;
+            margin-bottom: var(--sp-md);
+        }
+    </style>
+</head>
+
+<body>
+    <div id="navbar-mount"></div>
+
+    <div class="events-page">
+        <div class="page-header">
+            <h1>Upcoming <span>Events</span></h1>
+            <p>Stay connected through reunions, talks, hackathons, and more</p>
+        </div>
+
+        <div class="category-tabs" id="category-tabs">
+            <button class="cat-tab active" data-cat="all">All Events</button>
+            <button class="cat-tab" data-cat="reunion">Reunions</button>
+            <button class="cat-tab" data-cat="seminar">Seminars & Talks</button>
+            <button class="cat-tab" data-cat="career">Career Fairs</button>
+            <button class="cat-tab" data-cat="competition">Competitions</button>
+            <button class="cat-tab" data-cat="sports">Sports</button>
+        </div>
+
+        <div class="events-grid" id="events-grid">
+            <!-- Rendered by JS -->
+        </div>
+    </div>
+
+    <div id="footer-mount"></div>
+
+    <script src="js/auth.js"></script>
+    <script src="js/captcha.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/feed.js"></script>
+    <script>
+        Auth.seedSampleUsers();
+        Utils.initPage('events');
+
+        // Seed events
+        function seedEvents() {
+            if (localStorage.getItem('alumights_events')) return;
+            const events = [
+                { id: 'e1', title: 'Annual Alumni Reunion 2026', date: '2026-03-15T10:00:00Z', location: 'University of Delhi Campus', description: 'Join us for the grand annual alumni reunion with networking sessions, keynote speeches, and cultural programs. Meet old friends and make new connections!', category: 'reunion', organizer: 'Alumni Association' },
+                { id: 'e2', title: 'Tech Talk: AI in Healthcare', date: '2026-03-22T14:00:00Z', location: 'Online (Zoom)', description: 'An exclusive talk by Priya Sharma (IIT Delhi) on using AI/ML for early disease detection. Q&A session included.', category: 'seminar', organizer: 'Tech Alumni Club' },
+                { id: 'e3', title: 'Spring Career Fair 2026', date: '2026-04-10T09:00:00Z', location: 'NSUT Delhi Auditorium', description: 'Connect with top recruiters from Google, Microsoft, Amazon, and 50+ companies. Open to all alumni and final year students.', category: 'career', organizer: 'Career Services' },
+                { id: 'e4', title: 'Hackathon: Build for Good', date: '2026-04-25T08:00:00Z', location: 'DTU Delhi', description: '48-hour hackathon focused on building solutions for social impact. ₹2L prize pool. Teams of 2-4 members.', category: 'competition', organizer: 'DTU Alumni Network' },
+                { id: 'e5', title: 'Alumni Sports Day', date: '2026-05-08T07:00:00Z', location: 'BITS Pilani Campus', description: 'Annual inter-batch sports tournament featuring cricket, football, badminton, chess, and table tennis. Trophies for all winners!', category: 'sports', organizer: 'BITS Alumni Association' },
+                { id: 'e6', title: 'Startup Pitch Night', date: '2026-05-20T18:00:00Z', location: 'IIT Delhi E-Cell', description: 'Alumni founders pitch their startups to a panel of angel investors and VCs. ₹10L in investment prizes.', category: 'seminar', organizer: 'E-Cell Alumni' },
+                { id: 'e7', title: 'MMMUT Silver Jubilee Reunion', date: '2026-06-12T10:00:00Z', location: 'MMMUT Gorakhpur', description: 'Celebrating 25 years of excellence! All batches welcome. Cultural night, campus tour, and gala dinner.', category: 'reunion', organizer: 'MMMUT Alumni Cell' },
+                { id: 'e8', title: 'Data Science Workshop', date: '2026-06-28T10:00:00Z', location: 'Online (Google Meet)', description: 'Hands-on workshop on Python, Pandas, and ML basics. Led by Sneha Gupta (Google, DTU Alumni). Certificate provided.', category: 'seminar', organizer: 'Alumni Learning Hub' }
+            ];
+            localStorage.setItem('alumights_events', JSON.stringify(events));
+        }
+
+        seedEvents();
+
+        let currentCat = 'all';
+
+        const categoryLabels = {
+            reunion: 'Reunion',
+            seminar: 'Seminar',
+            career: 'Career Fair',
+            competition: 'Competition',
+            sports: 'Sports',
+            workshop: 'Workshop'
+        };
+
+        function renderEvents() {
+            const events = JSON.parse(localStorage.getItem('alumights_events') || '[]');
+            const filtered = currentCat === 'all' ? events : events.filter(e => e.category === currentCat);
+
+            const grid = document.getElementById('events-grid');
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-events">
+                        <i class="fa-solid fa-calendar-xmark"></i>
+                        <h3 style="color:var(--clr-text-heading); margin-bottom:var(--sp-sm);">No events found</h3>
+                        <p>Check back later for new events</p>
+                    </div>`;
+                return;
+            }
+
+            grid.innerHTML = filtered.map((ev, i) => {
+                const d = new Date(ev.date);
+                const monthStr = d.toLocaleString('en', { month: 'short' });
+                const dayStr = d.getDate();
+                const yearStr = d.getFullYear();
+                const timeStr = d.toLocaleString('en', { hour: 'numeric', minute: '2-digit', hour12: true });
+
+                return `
+                <div class="event-card glass animate-in" style="animation-delay: ${i * 0.06}s">
+                    <div class="event-card-banner"></div>
+                    <div class="event-card-body">
+                        <div class="event-card-header">
+                            <div class="event-date-block">
+                                <div class="month">${monthStr}</div>
+                                <div class="day">${dayStr}</div>
+                                <div class="year">${yearStr}</div>
+                            </div>
+                            <div class="event-card-info">
+                                <h3>${Utils.escapeHTML(ev.title)}</h3>
+                                <div class="event-card-meta">
+                                    <span><i class="fa-solid fa-location-dot"></i> ${Utils.escapeHTML(ev.location)}</span>
+                                    <span><i class="fa-solid fa-clock"></i> ${timeStr}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="event-card-desc">${Utils.escapeHTML(ev.description)}</p>
+                        <div class="event-card-footer">
+                            <span class="event-category-badge cat-${ev.category}">${categoryLabels[ev.category] || ev.category}</span>
+                            <span style="font-size:var(--fs-xs); color:var(--clr-text-dim);"><i class="fa-solid fa-user-group" style="margin-right:4px;"></i> ${Utils.escapeHTML(ev.organizer)}</span>
+                        </div>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        // Tab click handler
+        document.getElementById('category-tabs').addEventListener('click', (e) => {
+            const btn = e.target.closest('.cat-tab');
+            if (!btn) return;
+
+            document.querySelectorAll('.cat-tab').forEach(t => t.classList.remove('active'));
+            btn.classList.add('active');
+            currentCat = btn.dataset.cat;
+            renderEvents();
+        });
+
+        renderEvents();
+    </script>
+</body>
+
+</html>

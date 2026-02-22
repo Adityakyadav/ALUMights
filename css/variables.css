@@ -1,0 +1,112 @@
+/* ============================================
+   ALUMights Design System — "Midnight Observatory"
+   Deep cosmic blacks · Warm amber/gold accents
+   Grainy atmospheric texture · Editorial typography
+   ============================================ */
+
+/* Courier New — system monospace, no import needed */
+
+:root {
+    /* ---- Deep Cosmic Palette ---- */
+    --clr-bg-void: #020617;
+    --clr-bg-deep: #0a1128;
+    --clr-bg-surface: #0f1a30;
+    --clr-bg-card: rgba(15, 26, 48, 0.75);
+    --clr-bg-card-solid: #111d35;
+    --clr-bg-input: rgba(15, 26, 48, 0.9);
+    --clr-bg-hover: rgba(59, 130, 246, 0.06);
+
+    /* ---- Electric Blue Accents ---- */
+    --clr-accent: #3b82f6;
+    --clr-accent-light: #60a5fa;
+    --clr-accent-dim: #2563eb;
+    --clr-accent-glow: rgba(59, 130, 246, 0.25);
+    --clr-accent-gradient: linear-gradient(135deg, #3b82f6, #6366f1);
+    --clr-accent-gradient-h: linear-gradient(90deg, #3b82f6, #60a5fa);
+
+    /* ---- Cyan Secondary ---- */
+    --clr-secondary: #06b6d4;
+    --clr-secondary-light: #22d3ee;
+
+    /* ---- Semantic ---- */
+    --clr-success: #4ade80;
+    --clr-warning: #fbbf24;
+    --clr-danger: #f87171;
+    --clr-info: #67e8f9;
+
+    /* ---- Text ---- */
+    --clr-text: #cbd5e1;
+    --clr-text-muted: #64748b;
+    --clr-text-dim: #475569;
+    --clr-text-heading: #e2e8f0;
+    --clr-text-link: #60a5fa;
+
+    /* ---- Borders ---- */
+    --clr-border: rgba(59, 130, 246, 0.1);
+    --clr-border-subtle: rgba(148, 163, 184, 0.08);
+    --clr-border-focus: rgba(59, 130, 246, 0.4);
+
+    /* ---- Typography ---- */
+    --ff-display: 'Courier New', Courier, monospace;
+    --ff-body: 'Courier New', Courier, monospace;
+    --ff-mono: 'Courier New', Courier, monospace;
+
+    --fs-xs: 0.7rem;
+    --fs-sm: 0.825rem;
+    --fs-base: 0.95rem;
+    --fs-md: 1.1rem;
+    --fs-lg: 1.25rem;
+    --fs-xl: 1.5rem;
+    --fs-2xl: 2rem;
+    --fs-3xl: 2.75rem;
+    --fs-hero: 4rem;
+
+    --fw-light: 300;
+    --fw-normal: 400;
+    --fw-medium: 500;
+    --fw-semibold: 600;
+    --fw-bold: 700;
+    --fw-extrabold: 800;
+
+    /* ---- Spacing ---- */
+    --sp-xs: 0.25rem;
+    --sp-sm: 0.5rem;
+    --sp-md: 1rem;
+    --sp-lg: 1.5rem;
+    --sp-xl: 2rem;
+    --sp-2xl: 3rem;
+    --sp-3xl: 4rem;
+    --sp-4xl: 6rem;
+
+    /* ---- Radius ---- */
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 14px;
+    --radius-xl: 20px;
+    --radius-full: 9999px;
+
+    /* ---- Shadows ---- */
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.5);
+    --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.5);
+    --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.6);
+    --shadow-glow: 0 0 24px rgba(59, 130, 246, 0.2);
+    --shadow-card: 0 2px 20px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(148, 163, 184, 0.03);
+    --shadow-inset: inset 0 2px 8px rgba(0, 0, 0, 0.3);
+
+    /* ---- Glass ---- */
+    --glass-bg: rgba(15, 26, 48, 0.6);
+    --glass-border: 1px solid rgba(59, 130, 246, 0.08);
+    --glass-blur: blur(20px);
+
+    /* ---- Transitions ---- */
+    --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+    --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+    --transition-fast: 150ms var(--ease-smooth);
+    --transition-base: 280ms var(--ease-smooth);
+    --transition-slow: 450ms var(--ease-smooth);
+
+    /* ---- Layout ---- */
+    --navbar-h: 64px;
+    --sidebar-w: 260px;
+    --container-max: 1280px;
+}

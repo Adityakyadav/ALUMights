@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile — ALUMights</title>
+    <meta name="description" content="View and edit your ALUMights alumni profile.">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+        crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link rel="stylesheet" href="css/common.css">
+    <style>
+        .profile-page {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: var(--sp-xl) var(--sp-lg);
+        }
+
+        .profile-hero {
+            position: relative;
+            padding: var(--sp-2xl);
+            text-align: center;
+            overflow: hidden;
+        }
+
+        .profile-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 120px;
+            background: var(--clr-accent-gradient);
+            opacity: 0.15;
+            border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+        }
+
+        .profile-hero .avatar {
+            position: relative;
+            margin: 0 auto var(--sp-lg);
+            border: 3px solid var(--clr-accent);
+            box-shadow: var(--shadow-glow);
+        }
+
+        .profile-hero h1 {
+            font-family: var(--ff-display);
+            font-size: var(--fs-2xl);
+            color: var(--clr-text-heading);
+        }
+
+        .profile-hero .username {
+            color: var(--clr-text-dim);
+            font-size: var(--fs-sm);
+            margin-top: 2px;
+        }
+
+        .profile-hero .bio {
+            color: var(--clr-text-muted);
+            font-size: var(--fs-base);
+            margin-top: var(--sp-md);
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.7;
+        }
+
+        .profile-badges {
+            display: flex;
+            gap: var(--sp-sm);
+            justify-content: center;
+            margin-top: var(--sp-lg);
+            flex-wrap: wrap;
+        }
+
+        .profile-info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: var(--sp-md);
+            margin-top: var(--sp-xl);
+        }
+
+        .info-item {
+            text-align: center;
+            padding: var(--sp-md);
+            background: var(--clr-bg-input);
+            border-radius: var(--radius-md);
+        }
+
+        .info-item i {
+            color: var(--clr-accent-light);
+            font-size: var(--fs-lg);
+            margin-bottom: 6px;
+        }
+
+        .info-item .label {
+            display: block;
+            font-size: var(--fs-xs);
+            color: var(--clr-text-dim);
+            margin-bottom: 4px;
+        }
+
+        .info-item .value {
+            font-size: var(--fs-sm);
+            font-weight: var(--fw-medium);
+            color: var(--clr-text);
+        }
+
+        .profile-actions {
+            display: flex;
+            justify-content: center;
+            gap: var(--sp-md);
+            margin-top: var(--sp-xl);
+        }
+
+        /* Edit Form */
+        .edit-section {
+            margin-top: var(--sp-xl);
+            padding: var(--sp-xl);
+            display: none;
+        }
+
+        .edit-section.show {
+            display: block;
+            animation: fadeInUp 0.3s var(--ease-smooth);
+        }
+
+        .edit-section h2 {
+            font-family: var(--ff-display);
+            font-size: var(--fs-lg);
+            color: var(--clr-text-heading);
+            margin-bottom: var(--sp-lg);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--sp-md);
+        }
+
+        @media (max-width: 520px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .edit-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: var(--sp-sm);
+            margin-top: var(--sp-xl);
+        }
+
+        /* User Posts Section */
+        .user-posts-section {
+            margin-top: var(--sp-xl);
+        }
+
+        .section-title {
+            font-family: var(--ff-display);
+            font-size: var(--fs-lg);
+            color: var(--clr-text-heading);
+            margin-bottom: var(--sp-lg);
+            display: flex;
+            align-items: center;
+            gap: var(--sp-sm);
+        }
+
+        .post-card {
+            padding: var(--sp-lg);
+            margin-bottom: var(--sp-md);
+        }
+
+        .post-header {
+            display: flex;
+            gap: var(--sp-md);
+            align-items: center;
+            margin-bottom: var(--sp-md);
+        }
+
+        .post-meta {
+            flex: 1;
+        }
+
+        .post-author {
+            font-size: var(--fs-base);
+            font-weight: var(--fw-semibold);
+            color: var(--clr-text-heading);
+        }
+
+        .post-info {
+            font-size: var(--fs-xs);
+            color: var(--clr-text-dim);
+        }
+
+        .post-content p {
+            color: var(--clr-text);
+            line-height: 1.7;
+            font-size: var(--fs-sm);
+            white-space: pre-wrap;
+        }
+
+        .post-stats {
+            display: flex;
+            justify-content: space-between;
+            padding: var(--sp-sm) 0;
+            margin-top: var(--sp-md);
+            border-top: 1px solid var(--clr-border);
+            font-size: var(--fs-xs);
+            color: var(--clr-text-dim);
+        }
+    </style>
+</head>
+
+<body>
+    <div id="navbar-mount"></div>
+
+    <div class="profile-page" id="profile-content">
+        <!-- Rendered by JS -->
+    </div>
+
+    <div id="footer-mount"></div>
+
+    <script src="js/auth.js"></script>
+    <script src="js/captcha.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/feed.js"></script>
+    <script>
+        Auth.seedSampleUsers();
+        Feed.seedSamplePosts();
+        Utils.initPage('');
+
+        // Check if viewing another user via query param
+        const urlParams = new URLSearchParams(window.location.search);
+        const viewUserId = urlParams.get('id');
+
+        let profileUser = null;
+        let isOwnProfile = false;
+
+        if (viewUserId) {
+            const allUsers = Auth.getUsers();
+            profileUser = allUsers.find(u => u.id === viewUserId);
+            isOwnProfile = Auth.getCurrentUser() && Auth.getCurrentUser().id === viewUserId;
+        } else {
+            if (!Auth.requireAuth()) { /* redirects */ }
+            profileUser = Auth.getCurrentUser();
+            isOwnProfile = true;
+        }
+
+        function renderProfile() {
+            if (!profileUser) {
+                document.getElementById('profile-content').innerHTML = `
+                    <div class="glass" style="text-align:center; padding: var(--sp-3xl);">
+                        <i class="fa-solid fa-user-slash" style="font-size:3rem; color:var(--clr-text-dim); margin-bottom:var(--sp-md);"></i>
+                        <h2 style="color:var(--clr-text-heading);">User Not Found</h2>
+                        <p style="color:var(--clr-text-muted); margin:var(--sp-md) 0;">This profile doesn't exist.</p>
+                        <a href="directory.html" class="btn btn-primary">Browse Directory</a>
+                    </div>`;
+                return;
+            }
+
+            const userPosts = Feed.getPosts().filter(p => p.authorId === profileUser.id);
+
+            let postsHTML = '';
+            if (userPosts.length === 0) {
+                postsHTML = `<div style="text-align:center; padding:var(--sp-2xl); color:var(--clr-text-dim);">
+                    <i class="fa-solid fa-file-lines" style="font-size:2rem; margin-bottom:var(--sp-sm);"></i>
+                    <p>No posts yet</p>
+                </div>`;
+            } else {
+                userPosts.forEach(post => {
+                    postsHTML += `
+                    <div class="post-card glass">
+                        <div class="post-header">
+                            <div class="avatar">${Utils.getInitials(post.authorName)}</div>
+                            <div class="post-meta">
+                                <h3 class="post-author">${Utils.escapeHTML(post.authorName)}</h3>
+                                <span class="post-info">${Utils.timeAgo(post.createdAt)}</span>
+                            </div>
+                        </div>
+                        <div class="post-content"><p>${Utils.escapeHTML(post.content)}</p></div>
+                        <div class="post-stats">
+                            <span>${post.likes.length} likes</span>
+                            <span>${post.comments.length} comments</span>
+                        </div>
+                    </div>`;
+                });
+            }
+
+            const editBtnHTML = isOwnProfile
+                ? `<button class="btn btn-secondary" onclick="toggleEdit()"><i class="fa-solid fa-pen-to-square"></i> Edit Profile</button>`
+                : '';
+
+            document.getElementById('profile-content').innerHTML = `
+                <div class="profile-hero glass animate-in">
+                    <div class="avatar avatar-xl">${Utils.getInitials(profileUser.fullName)}</div>
+                    <h1>${Utils.escapeHTML(profileUser.fullName)}</h1>
+                    <p class="username">@${Utils.escapeHTML(profileUser.username)}</p>
+                    ${profileUser.bio ? `<p class="bio">${Utils.escapeHTML(profileUser.bio)}</p>` : ''}
+                    <div class="profile-badges">
+                        ${profileUser.college ? `<span class="badge"><i class="fa-solid fa-building-columns" style="margin-right:4px;"></i> ${Utils.escapeHTML(profileUser.college)}</span>` : ''}
+                        ${profileUser.course ? `<span class="badge">${Utils.escapeHTML(profileUser.course)}</span>` : ''}
+                        ${profileUser.gradYear ? `<span class="badge badge-success">Class of ${profileUser.gradYear}</span>` : ''}
+                    </div>
+                    <div class="profile-info-grid">
+                        <div class="info-item">
+                            <i class="fa-solid fa-users"></i>
+                            <span class="label">Connections</span>
+                            <span class="value">${profileUser.connections || 0}</span>
+                        </div>
+                        <div class="info-item">
+                            <i class="fa-solid fa-newspaper"></i>
+                            <span class="label">Posts</span>
+                            <span class="value">${userPosts.length}</span>
+                        </div>
+                        <div class="info-item">
+                            <i class="fa-solid fa-calendar-check"></i>
+                            <span class="label">Joined</span>
+                            <span class="value">${Utils.formatDate(profileUser.joinedAt)}</span>
+                        </div>
+                        <div class="info-item">
+                            <i class="fa-solid fa-envelope"></i>
+                            <span class="label">Email</span>
+                            <span class="value">${Utils.escapeHTML(profileUser.email)}</span>
+                        </div>
+                    </div>
+                    <div class="profile-actions">
+                        ${editBtnHTML}
+                    </div>
+                </div>
+
+                ${isOwnProfile ? `
+                <div class="edit-section glass" id="edit-section">
+                    <h2><i class="fa-solid fa-pen-to-square"></i> Edit Profile</h2>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="edit-fullName">Full Name</label>
+                            <input type="text" class="form-control" id="edit-fullName" value="${Utils.escapeHTML(profileUser.fullName)}">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="edit-college">College</label>
+                            <input type="text" class="form-control" id="edit-college" value="${Utils.escapeHTML(profileUser.college || '')}">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="edit-course">Course</label>
+                            <input type="text" class="form-control" id="edit-course" value="${Utils.escapeHTML(profileUser.course || '')}">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="edit-gradYear">Graduation Year</label>
+                            <input type="text" class="form-control" id="edit-gradYear" value="${Utils.escapeHTML(profileUser.gradYear || '')}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="edit-bio">Bio</label>
+                        <textarea class="form-control" id="edit-bio" rows="3" style="resize:vertical;">${Utils.escapeHTML(profileUser.bio || '')}</textarea>
+                    </div>
+                    <div class="edit-actions">
+                        <button class="btn btn-ghost" onclick="toggleEdit()">Cancel</button>
+                        <button class="btn btn-primary" onclick="saveProfile()"><i class="fa-solid fa-check"></i> Save Changes</button>
+                    </div>
+                </div>` : ''}
+
+                <div class="user-posts-section">
+                    <h2 class="section-title"><i class="fa-solid fa-newspaper"></i> ${isOwnProfile ? 'My' : Utils.escapeHTML(profileUser.fullName.split(' ')[0]) + "'s"} Posts</h2>
+                    ${postsHTML}
+                </div>`;
+        }
+
+        function toggleEdit() {
+            document.getElementById('edit-section').classList.toggle('show');
+        }
+
+        function saveProfile() {
+            const updates = {
+                fullName: document.getElementById('edit-fullName').value.trim(),
+                college: document.getElementById('edit-college').value.trim(),
+                course: document.getElementById('edit-course').value.trim(),
+                gradYear: document.getElementById('edit-gradYear').value.trim(),
+                bio: document.getElementById('edit-bio').value.trim()
+            };
+
+            if (!updates.fullName) {
+                Utils.showToast('Full name cannot be empty.', 'error');
+                return;
+            }
+
+            const result = Auth.updateProfile(updates);
+            if (result.success) {
+                Utils.showToast(result.message, 'success');
+                profileUser = Auth.getCurrentUser();
+                renderProfile();
+                Utils.initPage('');
+            } else {
+                Utils.showToast(result.message, 'error');
+            }
+        }
+
+        renderProfile();
+    </script>
+</body>
+
+</html>

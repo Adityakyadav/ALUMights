@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ALUMights — Alumni Network</title>
+    <meta name="description"
+        content="ALUMights is a modern alumni networking platform connecting students and graduates across colleges.">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+        crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link rel="stylesheet" href="css/common.css">
+    <style>
+        /* ---- Page Layout ---- */
+        .dashboard {
+            display: grid;
+            grid-template-columns: 260px 1fr 280px;
+            gap: var(--sp-xl);
+            max-width: var(--container-max);
+            margin: 0 auto;
+            padding: var(--sp-xl) var(--sp-lg);
+            min-height: calc(100vh - var(--navbar-h));
+        }
+
+        @media (max-width: 1024px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+
+            .left-sidebar,
+            .right-sidebar {
+                display: none;
+            }
+        }
+
+        /* ---- Left Sidebar ---- */
+        .left-sidebar .profile-card {
+            text-align: center;
+            padding: var(--sp-xl);
+        }
+
+        .profile-card .avatar {
+            margin: 0 auto var(--sp-md);
+        }
+
+        .profile-card h3 {
+            font-family: var(--ff-display);
+            font-size: var(--fs-md);
+            color: var(--clr-text-heading);
+        }
+
+        .profile-card .college-text {
+            font-size: var(--fs-xs);
+            color: var(--clr-text-muted);
+            margin-top: 4px;
+        }
+
+        .profile-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1px;
+            margin-top: var(--sp-lg);
+            background: var(--clr-border);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+        }
+
+        .profile-stat {
+            text-align: center;
+            padding: var(--sp-md);
+            background: var(--clr-bg-card-solid);
+        }
+
+        .profile-stat strong {
+            display: block;
+            font-size: var(--fs-lg);
+            color: var(--clr-accent-light);
+            font-weight: var(--fw-bold);
+        }
+
+        .profile-stat span {
+            font-size: var(--fs-xs);
+            color: var(--clr-text-dim);
+        }
+
+        .sidebar-nav {
+            margin-top: var(--sp-lg);
+        }
+
+        .sidebar-nav .nav-item {
+            display: flex;
+            align-items: center;
+            gap: var(--sp-md);
+            padding: 0.65rem var(--sp-lg);
+            color: var(--clr-text-muted);
+            font-size: var(--fs-sm);
+            border-radius: var(--radius-md);
+            transition: all var(--transition-fast);
+        }
+
+        .sidebar-nav .nav-item:hover {
+            color: var(--clr-text);
+            background: var(--clr-bg-hover);
+        }
+
+        .sidebar-nav .nav-item i {
+            width: 20px;
+            text-align: center;
+            font-size: var(--fs-base);
+        }
+
+        /* ---- Feed Section ---- */
+        .feed-section {
+            max-width: 640px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* Create Post */
+        .create-post {
+            padding: var(--sp-lg);
+            margin-bottom: var(--sp-xl);
+        }
+
+        .create-post-header {
+            display: flex;
+            gap: var(--sp-md);
+            align-items: center;
+        }
+
+        .create-post-input {
+            flex: 1;
+            padding: 0.7rem 1rem;
+            background: var(--clr-bg-input);
+            border: 1px solid var(--clr-border);
+            border-radius: var(--radius-full);
+            color: var(--clr-text);
+            font-size: var(--fs-sm);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .create-post-input:hover {
+            border-color: var(--clr-border-focus);
+        }
+
+        .create-post-expanded {
+            display: none;
+            margin-top: var(--sp-lg);
+        }
+
+        .create-post-expanded.show {
+            display: block;
+            animation: fadeInUp 0.3s var(--ease-smooth);
+        }
+
+        .create-post-expanded textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: var(--sp-md);
+            background: var(--clr-bg-input);
+            border: 1px solid var(--clr-border);
+            border-radius: var(--radius-md);
+            color: var(--clr-text);
+            font-size: var(--fs-base);
+            resize: vertical;
+            line-height: 1.6;
+        }
+
+        .create-post-expanded textarea:focus {
+            border-color: var(--clr-accent);
+            box-shadow: 0 0 0 3px var(--clr-accent-glow);
+        }
+
+        .create-post-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: var(--sp-sm);
+            margin-top: var(--sp-md);
+        }
+
+        /* Post Card */
+        .post-card {
+            padding: var(--sp-lg);
+            margin-bottom: var(--sp-lg);
+        }
+
+        .post-header {
+            display: flex;
+            gap: var(--sp-md);
+            align-items: center;
+            margin-bottom: var(--sp-md);
+        }
+
+        .post-meta {
+            flex: 1;
+        }
+
+        .post-author {
+            font-size: var(--fs-base);
+            font-weight: var(--fw-semibold);
+            color: var(--clr-text-heading);
+        }
+
+        .post-info {
+            font-size: var(--fs-xs);
+            color: var(--clr-text-dim);
+        }
+
+        .post-content p {
+            color: var(--clr-text);
+            line-height: 1.7;
+            font-size: var(--fs-sm);
+            white-space: pre-wrap;
+        }
+
+        .post-image {
+            margin-top: var(--sp-md);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            max-height: 400px;
+        }
+
+        .post-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .post-stats {
+            display: flex;
+            justify-content: space-between;
+            padding: var(--sp-sm) 0;
+            margin-top: var(--sp-md);
+            border-bottom: 1px solid var(--clr-border);
+            font-size: var(--fs-xs);
+            color: var(--clr-text-dim);
+        }
+
+        .post-actions {
+            display: flex;
+            gap: var(--sp-sm);
+            padding-top: var(--sp-sm);
+        }
+
+        .post-action-btn {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--sp-sm);
+            padding: var(--sp-sm) var(--sp-md);
+            border-radius: var(--radius-md);
+            color: var(--clr-text-muted);
+            font-size: var(--fs-sm);
+            font-weight: var(--fw-medium);
+            transition: all var(--transition-fast);
+        }
+
+        .post-action-btn:hover {
+            background: var(--clr-bg-hover);
+            color: var(--clr-text);
+        }
+
+        .post-action-btn.liked {
+            color: var(--clr-accent-light);
+        }
+
+        /* Comments */
+        .post-comments {
+            padding-top: var(--sp-md);
+        }
+
+        .comment {
+            display: flex;
+            gap: var(--sp-sm);
+            margin-bottom: var(--sp-sm);
+        }
+
+        .comment-body {
+            flex: 1;
+            background: var(--clr-bg-input);
+            padding: var(--sp-sm) var(--sp-md);
+            border-radius: var(--radius-md);
+            font-size: var(--fs-sm);
+        }
+
+        .comment-body strong {
+            color: var(--clr-text-heading);
+            font-size: var(--fs-xs);
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        .comment-body span {
+            color: var(--clr-text-muted);
+        }
+
+        .comment-input-section {
+            margin-top: var(--sp-sm);
+        }
+
+        .comment-input-row {
+            display: flex;
+            gap: var(--sp-sm);
+        }
+
+        .comment-input-row .form-control {
+            flex: 1;
+            padding: 0.5rem 0.75rem;
+            font-size: var(--fs-sm);
+        }
+
+        /* ---- Right Sidebar ---- */
+        .right-sidebar .widget {
+            padding: var(--sp-lg);
+            margin-bottom: var(--sp-lg);
+        }
+
+        .widget h3 {
+            font-family: var(--ff-display);
+            font-size: var(--fs-sm);
+            font-weight: var(--fw-semibold);
+            color: var(--clr-text-heading);
+            margin-bottom: var(--sp-md);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .event-mini {
+            display: flex;
+            gap: var(--sp-md);
+            margin-bottom: var(--sp-md);
+            padding-bottom: var(--sp-md);
+            border-bottom: 1px solid var(--clr-border);
+        }
+
+        .event-mini:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .event-date-box {
+            width: 44px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .event-date-box .month {
+            font-size: var(--fs-xs);
+            color: var(--clr-accent-light);
+            font-weight: var(--fw-semibold);
+            text-transform: uppercase;
+        }
+
+        .event-date-box .day {
+            font-size: var(--fs-xl);
+            font-weight: var(--fw-bold);
+            color: var(--clr-text-heading);
+            line-height: 1;
+        }
+
+        .event-mini-info h4 {
+            font-size: var(--fs-sm);
+            color: var(--clr-text);
+            font-weight: var(--fw-medium);
+        }
+
+        .event-mini-info p {
+            font-size: var(--fs-xs);
+            color: var(--clr-text-dim);
+            margin-top: 2px;
+        }
+
+        .trending-item {
+            display: flex;
+            align-items: center;
+            gap: var(--sp-sm);
+            padding: var(--sp-sm) 0;
+            font-size: var(--fs-sm);
+            color: var(--clr-text-muted);
+        }
+
+        .trending-item i {
+            color: var(--clr-accent-light);
+            font-size: var(--fs-xs);
+        }
+
+        /* Guest Banner */
+        .guest-banner {
+            text-align: center;
+            padding: var(--sp-2xl);
+            margin-bottom: var(--sp-xl);
+        }
+
+        .guest-banner h2 {
+            font-family: var(--ff-display);
+            font-size: var(--fs-2xl);
+            color: var(--clr-text-heading);
+            margin-bottom: var(--sp-sm);
+        }
+
+        .guest-banner p {
+            color: var(--clr-text-muted);
+            margin-bottom: var(--sp-xl);
+        }
+
+        .guest-banner .btn {
+            margin: 0 var(--sp-xs);
+        }
+
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: var(--sp-3xl);
+            color: var(--clr-text-dim);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: var(--sp-md);
+            color: var(--clr-text-dim);
+        }
+    </style>
+</head>
+
+<body>
+    <div id="navbar-mount"></div>
+
+    <div class="dashboard">
+        <!-- Left Sidebar -->
+        <aside class="left-sidebar" id="left-sidebar"></aside>
+
+        <!-- Main Feed -->
+        <main class="feed-section" id="feed-section"></main>
+
+        <!-- Right Sidebar -->
+        <aside class="right-sidebar" id="right-sidebar"></aside>
+    </div>
+
+    <div id="footer-mount"></div>
+
+    <script src="js/auth.js"></script>
+    <script src="js/captcha.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/feed.js"></script>
+    <script>
+        // Initialize data
+        Auth.seedSampleUsers();
+        Feed.seedSamplePosts();
+        Utils.initPage('home');
+
+        const user = Auth.getCurrentUser();
+        const isLoggedIn = !!user;
+
+        // ---- Render Left Sidebar ----
+        function renderLeftSidebar() {
+            const el = document.getElementById('left-sidebar');
+            if (isLoggedIn) {
+                el.innerHTML = `
+                    <div class="profile-card glass">
+                        <div class="avatar avatar-lg">${Utils.getInitials(user.fullName)}</div>
+                        <h3>${Utils.escapeHTML(user.fullName)}</h3>
+                        <p class="college-text">${Utils.escapeHTML(user.college || 'No college set')} · ${Utils.escapeHTML(user.course || '')}</p>
+                        <div class="profile-stats">
+                            <div class="profile-stat">
+                                <strong>${user.connections || 0}</strong>
+                                <span>Connections</span>
+                            </div>
+                            <div class="profile-stat">
+                                <strong>${Feed.getPosts().filter(p => p.authorId === user.id).length}</strong>
+                                <span>Posts</span>
+                            </div>
+                        </div>
+                    </div>
+                    <nav class="sidebar-nav glass" style="padding: var(--sp-md) 0;">
+                        <a href="profile.html" class="nav-item"><i class="fa-solid fa-user"></i> My Profile</a>
+                        <a href="directory.html" class="nav-item"><i class="fa-solid fa-users"></i> Alumni Directory</a>
+                        <a href="events.html" class="nav-item"><i class="fa-solid fa-calendar-days"></i> Events</a>
+                        <a href="#" class="nav-item"><i class="fa-solid fa-briefcase"></i> Career Portal</a>
+                        <a href="#" class="nav-item"><i class="fa-solid fa-hand-holding-dollar"></i> Giving Back</a>
+                    </nav>`;
+            } else {
+                el.innerHTML = `
+                    <div class="glass" style="padding: var(--sp-xl); text-align: center;">
+                        <i class="fa-solid fa-user-group" style="font-size: 2rem; color: var(--clr-accent-light); margin-bottom: var(--sp-md);"></i>
+                        <h3 style="font-size: var(--fs-md); color: var(--clr-text-heading); margin-bottom: var(--sp-sm);">Join the Network</h3>
+                        <p style="font-size: var(--fs-sm); color: var(--clr-text-muted); margin-bottom: var(--sp-lg);">Connect with thousands of alumni</p>
+                        <a href="register.html" class="btn btn-primary btn-block">Sign Up Free</a>
+                    </div>`;
+            }
+        }
+
+        // ---- Render Feed ----
+        function renderFeed() {
+            const feedEl = document.getElementById('feed-section');
+            let html = '';
+
+            if (!isLoggedIn) {
+                html += `
+                    <div class="guest-banner glass">
+                        <h2>Welcome to <span style="background:var(--clr-accent-gradient-h);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">ALUMights</span></h2>
+                        <p>Your alumni networking platform — discover batchmates, share achievements, and grow together.</p>
+                        <a href="register.html" class="btn btn-primary btn-lg">Join Now</a>
+                        <a href="login.html" class="btn btn-secondary btn-lg">Sign In</a>
+                    </div>`;
+            }
+
+            // Create post box (only for logged-in users)
+            if (isLoggedIn) {
+                html += `
+                    <div class="create-post glass">
+                        <div class="create-post-header">
+                            <div class="avatar">${Utils.getInitials(user.fullName)}</div>
+                            <div class="create-post-input" onclick="expandCreatePost()">What's on your mind, ${Utils.escapeHTML(user.fullName.split(' ')[0])}?</div>
+                        </div>
+                        <div class="create-post-expanded" id="create-post-expanded">
+                            <textarea id="new-post-content" placeholder="Share an update, achievement, or thought..."></textarea>
+                            <div class="create-post-actions">
+                                <button class="btn btn-ghost" onclick="collapseCreatePost()">Cancel</button>
+                                <button class="btn btn-primary" onclick="submitPost()">
+                                    <i class="fa-solid fa-paper-plane"></i> Post
+                                </button>
+                            </div>
+                        </div>
+                    </div>`;
+            }
+
+            // Posts
+            const posts = Feed.getPosts();
+            if (posts.length === 0) {
+                html += `
+                    <div class="empty-state glass">
+                        <i class="fa-solid fa-newspaper"></i>
+                        <h3>No posts yet</h3>
+                        <p>Be the first to share something!</p>
+                    </div>`;
+            } else {
+                posts.forEach((post, i) => {
+                    html += Feed.renderPost(post);
+                });
+            }
+
+            feedEl.innerHTML = html;
+
+            // Add staggered animation
+            feedEl.querySelectorAll('.post-card').forEach((card, i) => {
+                card.style.animationDelay = `${i * 0.08}s`;
+            });
+        }
+
+        // ---- Render Right Sidebar ----
+        function renderRightSidebar() {
+            const el = document.getElementById('right-sidebar');
+
+            const events = JSON.parse(localStorage.getItem('alumights_events') || '[]').slice(0, 3);
+            let eventsHTML = '';
+            if (events.length > 0) {
+                events.forEach(ev => {
+                    const d = new Date(ev.date);
+                    eventsHTML += `
+                        <div class="event-mini">
+                            <div class="event-date-box">
+                                <div class="month">${d.toLocaleString('en', { month: 'short' })}</div>
+                                <div class="day">${d.getDate()}</div>
+                            </div>
+                            <div class="event-mini-info">
+                                <h4>${Utils.escapeHTML(ev.title)}</h4>
+                                <p>${Utils.escapeHTML(ev.location || 'Online')}</p>
+                            </div>
+                        </div>`;
+                });
+            } else {
+                eventsHTML = `<p style="font-size:var(--fs-sm);color:var(--clr-text-dim);">No upcoming events</p>`;
+            }
+
+            // Quick stats
+            const allUsers = Auth.getUsers();
+            const allPosts = Feed.getPosts();
+            const totalLikes = allPosts.reduce((sum, p) => sum + p.likes.length, 0);
+
+            el.innerHTML = `
+                <div class="widget glass">
+                    <h3><i class="fa-solid fa-chart-line" style="margin-right:6px;"></i> Network Stats</h3>
+                    <div class="trending-item"><i class="fa-solid fa-users"></i> <span>${allUsers.length} Alumni Members</span></div>
+                    <div class="trending-item"><i class="fa-solid fa-newspaper"></i> <span>${allPosts.length} Posts Shared</span></div>
+                    <div class="trending-item"><i class="fa-solid fa-heart"></i> <span>${totalLikes} Total Reactions</span></div>
+                    <div class="trending-item"><i class="fa-solid fa-building-columns"></i> <span>${[...new Set(allUsers.map(u => u.college).filter(Boolean))].length} Colleges</span></div>
+                </div>
+                <div class="widget glass">
+                    <h3><i class="fa-solid fa-calendar" style="margin-right:6px;"></i> Upcoming Events</h3>
+                    ${eventsHTML}
+                    <a href="events.html" style="display:block;text-align:center;margin-top:var(--sp-md);font-size:var(--fs-sm);">View All Events →</a>
+                </div>
+                <div class="widget glass">
+                    <h3><i class="fa-solid fa-fire" style="margin-right:6px;"></i> Trending</h3>
+                    <div class="trending-item"><i class="fa-solid fa-hashtag"></i> #AlumniReunion2026</div>
+                    <div class="trending-item"><i class="fa-solid fa-hashtag"></i> #TechCareers</div>
+                    <div class="trending-item"><i class="fa-solid fa-hashtag"></i> #CampusMemories</div>
+                    <div class="trending-item"><i class="fa-solid fa-hashtag"></i> #PlacementSeason</div>
+                    <div class="trending-item"><i class="fa-solid fa-hashtag"></i> #GivingBack</div>
+                </div>`;
+        }
+
+        // ---- Post Interactions ----
+        function expandCreatePost() {
+            document.getElementById('create-post-expanded').classList.add('show');
+            document.getElementById('new-post-content').focus();
+        }
+
+        function collapseCreatePost() {
+            document.getElementById('create-post-expanded').classList.remove('show');
+            document.getElementById('new-post-content').value = '';
+        }
+
+        function submitPost() {
+            const content = document.getElementById('new-post-content').value.trim();
+            if (!content) {
+                Utils.showToast('Please write something to post.', 'error');
+                return;
+            }
+            Feed.createPost(content);
+            Utils.showToast('Post shared successfully!', 'success');
+            collapseCreatePost();
+            renderFeed();
+        }
+
+        function handleLike(postId) {
+            if (!Auth.isLoggedIn()) {
+                Utils.showToast('Please sign in to like posts.', 'error');
+                return;
+            }
+            Feed.toggleLike(postId);
+            renderFeed();
+        }
+
+        function toggleCommentInput(postId) {
+            const section = document.getElementById(`comment-section-${postId}`);
+            if (section) {
+                const isHidden = section.style.display === 'none';
+                section.style.display = isHidden ? 'block' : 'none';
+                if (isHidden) {
+                    document.getElementById(`comment-input-${postId}`).focus();
+                }
+            }
+        }
+
+        function handleComment(postId) {
+            if (!Auth.isLoggedIn()) {
+                Utils.showToast('Please sign in to comment.', 'error');
+                return;
+            }
+            const input = document.getElementById(`comment-input-${postId}`);
+            const text = input.value.trim();
+            if (!text) return;
+
+            Feed.addComment(postId, text);
+            Utils.showToast('Comment added!', 'success');
+            renderFeed();
+        }
+
+        // ---- Seed events for right sidebar ----
+        function seedEvents() {
+            if (localStorage.getItem('alumights_events')) return;
+            const events = [
+                { id: 'e1', title: 'Annual Alumni Reunion 2026', date: '2026-03-15T10:00:00Z', location: 'University of Delhi Campus', description: 'Join us for the grand annual alumni reunion with networking sessions, keynote speeches, and cultural programs.', category: 'reunion', organizer: 'Alumni Association' },
+                { id: 'e2', title: 'Tech Talk: AI in Healthcare', date: '2026-03-22T14:00:00Z', location: 'Online (Zoom)', description: 'An exclusive talk by Priya Sharma (IIT Delhi) on using AI/ML for early disease detection.', category: 'seminar', organizer: 'Tech Alumni Club' },
+                { id: 'e3', title: 'Spring Career Fair 2026', date: '2026-04-10T09:00:00Z', location: 'NSUT Delhi Auditorium', description: 'Connect with top recruiters from leading tech companies. Open to all alumni and final year students.', category: 'career', organizer: 'Career Services' },
+                { id: 'e4', title: 'Hackathon: Build for Good', date: '2026-04-25T08:00:00Z', location: 'DTU Delhi', description: '48-hour hackathon focused on building solutions for social impact. ₹2L prize pool.', category: 'competition', organizer: 'DTU Alumni Network' },
+                { id: 'e5', title: 'Alumni Sports Day', date: '2026-05-08T07:00:00Z', location: 'BITS Pilani Campus', description: 'Annual inter-batch sports tournament. Cricket, football, badminton, and more!', category: 'sports', organizer: 'BITS Alumni Association' },
+                { id: 'e6', title: 'Startup Pitch Night', date: '2026-05-20T18:00:00Z', location: 'IIT Delhi Entrepreneurship Cell', description: 'Alumni founders pitch their startups to a panel of angel investors and VCs.', category: 'seminar', organizer: 'E-Cell Alumni' }
+            ];
+            localStorage.setItem('alumights_events', JSON.stringify(events));
+        }
+
+        // ---- Initialize ----
+        seedEvents();
+        renderLeftSidebar();
+        renderFeed();
+        renderRightSidebar();
+    </script>
+</body>
+
+</html>
